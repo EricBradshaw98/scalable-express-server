@@ -1,0 +1,14 @@
+
+DROP TABLE IF EXISTS user_files CASCADE;
+
+
+CREATE TABLE user_files (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  filename VARCHAR(255) NOT NULL,
+  path VARCHAR(255) NOT NULL,
+  mimetype VARCHAR(255),
+  size INTEGER,
+  user_id INTEGER REFERENCES users(id),
+  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
