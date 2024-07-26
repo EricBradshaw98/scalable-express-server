@@ -1,0 +1,18 @@
+DROP TABLE IF EXISTS products CASCADE;
+
+CREATE TABLE products(
+  id SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  price DECIMAL(10, 2) NOT NULL,
+  stock_quantity INT NOT NULL,
+  image_url VARCHAR(255) NOT NULL,
+  image_url2 VARCHAR(255) NOT NULL,
+  image_url3 VARCHAR(255) NOT NULL,
+  image_url4 VARCHAR(255) NOT NULL,
+  image_url5 VARCHAR(255) NOT NULL,
+  category_id INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES categories(id)
+);

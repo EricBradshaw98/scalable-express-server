@@ -1,0 +1,14 @@
+DROP TABLE IF EXISTS payments CASCADE;
+
+CREATE TABLE payments(
+  id SERIAL PRIMARY KEY NOT NULL,
+  order_id INT NOT NULL,
+  amount DECIMAL(10, 2) NOT NULL,
+  payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  payment_method VARCHAR(50) NOT NULL,
+  payment_status VARCHAR(50) NOT NULL,
+  transaction_id VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (order_id) REFERENCES orders(id)
+);
