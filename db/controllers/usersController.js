@@ -1,5 +1,8 @@
 const pool = require('../config/db');
 const camelCaseKeys = require('../../utilities/camelCase');
+const { addToBlacklist} = require('../../utilities/blacklist')
+const bcrypt = require('bcryptjs');
+const { generateToken } = require('../../utilities/jwttoken');
 
 // Get all users
 exports.getAllUsers = async (req, res) => {
@@ -73,4 +76,57 @@ exports.deleteUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while deleting the user' });
   }
+};
+
+
+// Register a new user
+exports.registerUser = async (req, res) => {
+  const { name, email, password, address, phoneNumber, role } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await pool.query(
+      'INSERT INTO users (name, email, password, address, phone_number, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, email, hashedPassword, address, phoneNumber, role]
+    );
+    const camelCasedResult = camelCaseKeys(result.rows[0]);
+    const token = generateToken(camelCasedResult);
+    res.status(201).json({ data: camelCasedResult, token });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while registering the user' });
+  }
+};
+
+// Login a user
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const user = result.rows[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
+    const camelCasedUser = camelCaseKeys(user);
+    const token = generateToken(camelCasedUser);
+    res.json({ data: camelCasedUser, token });
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while logging in the user' });
+  }
+};
+
+// Logout a user
+exports.logoutUser = async (req, res) => {
+  const authHeader = req.header('Authorization');
+
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Access denied. No token provided.' });
+  }
+
+  const token = authHeader.replace('Bearer ', '');
+  console.log(`Logging out token: ${token}`);
+  await addToBlacklist(token);
+  res.json({ message: 'User successfully logged out' });
 };
