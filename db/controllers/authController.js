@@ -7,6 +7,8 @@ require('dotenv').config();
 const { addToBlacklist } = require('../../utilities/blacklist');
 const { generateToken } = require('../../utilities/jwttoken');
 const camelCaseKeys = require('../../utilities/camelCase');
+const mailgun = require('mailgun-js')
+    ({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MG_DOMAIN });
 
 // Utility function to send emails
 const sendEmail = (to, subject, text) => {
@@ -68,3 +70,44 @@ exports.resetPassword = async (req, res) => {
     res.status(500).json({ error: 'Invalid or expired token' });
   }
 };
+
+
+exports.testEmail = async (req, res) => {
+  try {
+    const domain = process.env.MG_DOMAIN;
+    const { email } = req.body;
+
+    
+
+    // Create email data
+    const data = {
+      from: `Mailgun Sandbox <postmaster@${domain}>`,
+      to: email,
+      subject: "Hello",
+      text: `Your one-time token is: ` // Include token in the email
+    };
+
+    // Send email using Mailgun
+    mailgun.messages().send(data, async (error, body) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to send email" });
+      } else {
+        console.log(body);
+        try {
+          
+          res.status(200).json({ message: "Email sent successfully" });
+        } catch (err) {
+          console.error(err);
+          res.status(500).json({ message: "Failed to insert token into the database" });
+        }
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to send email" });
+  }
+}
+
+
+
