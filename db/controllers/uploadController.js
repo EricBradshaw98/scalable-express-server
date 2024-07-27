@@ -161,7 +161,7 @@ exports.renameFile = async (req, res) => {
     const file = result.rows[0];
     const fileExtension = path.extname(file.filename);
 
-    // Update only the name in the database
+    
     const updatedFileData = await pool.query(
       'UPDATE user_files SET name = $1 WHERE id = $2 RETURNING *',
       [newFilename + fileExtension, id]
@@ -190,14 +190,14 @@ exports.downloadFile = async (req, res) => {
     const file = result.rows[0];
     const filePath = path.join(file.path);
 
-    // Check if the file exists
+    
     fs.access(filePath, fs.constants.F_OK, (err) => {
       if (err) {
         console.error('File does not exist:', err);
         return res.status(404).json({ error: 'File not found' });
       }
 
-      // Send the file as a response
+      
       res.download(filePath, file.filename, (err) => {
         if (err) {
           console.error('Error sending file:', err);

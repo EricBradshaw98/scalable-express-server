@@ -1,0 +1,12 @@
+
+DROP TABLE IF EXISTS messages CASCADE;
+
+
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY,
+  content VARCHAR(255) NOT NULL,
+  conversation_id INTEGER REFERENCES conversations(id),
+  user_id INTEGER REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

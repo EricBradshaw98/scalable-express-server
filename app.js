@@ -7,8 +7,10 @@ const path = require('path');
 
 
 const usersRoutes = require('./db/routes/usersRoutes');
-const authRoutes = require('./db/routes/authRoutes'); // Import auth routes
+const authRoutes = require('./db/routes/authRoutes'); 
 const uploadRoutes = require('./db/routes/uploadRoutes');
+const conversationsRoutes = require('./db/routes/conversationsRoutes');
+const messagesRoutes = require('./db/routes/messagesRoutes');
 const auth = require('./utilities/auth');
 
 
@@ -55,6 +57,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/api', usersRoutes);
+app.use('/api', conversationsRoutes);
+app.use('/api', messagesRoutes);
 app.use('/api/auth', authRoutes); 
 app.use('/api/uploads', uploadRoutes); 
 
