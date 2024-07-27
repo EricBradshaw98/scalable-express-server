@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [Files, setFiles] = useState([]);
+
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/uploads/documents/1');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setFiles(data.documents);
+      } catch (error) {
+        
+      } finally {
+        
+      }
+    };
+
+    fetchDocuments();
+  }, []);
+  console.log(Files)
 
   const handleSingleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
