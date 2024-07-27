@@ -9,6 +9,9 @@ const uploadController = require('../controllers/uploadController');
 
 
 
+
+router.get('/download/:id', uploadController.downloadFile
+);
 router.get('/documents', uploadController.getAllDocuments)
 router.get('/documents/:id', uploadController.getDocumentsById)
 router.post('/upload-single', upload.single('file'), uploadController.uploadSingleFile);

@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const { generateToken } = require('../../utilities/jwttoken');
 const path = require('path');
 const fs = require('fs');
+const format = require('pg-format')
 
 
 
@@ -73,7 +74,7 @@ exports.uploadSingleFile = async (req, res) => {
     );
 
     const camelCasedResult = camelCaseKeys(result.rows[0]);
-    res.status(201).json({ message: 'File uploaded successfully', data: camelCasedResult });
+    res.status(201).json({ message: 'File uploaded successfully', data: result.rows });
   } catch (error) {
     console.error('Error uploading file:', error);
     res.status(500).json({ error: 'An error occurred while uploading the file' });
@@ -173,5 +174,39 @@ exports.renameFile = async (req, res) => {
   } catch (error) {
     console.error('Error renaming file:', error);
     res.status(500).json({ error: 'An error occurred while renaming the file' });
+  }
+};
+
+exports.downloadFile = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query('SELECT * FROM user_files WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+
+    const file = result.rows[0];
+    const filePath = path.join(file.path);
+
+    // Check if the file exists
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+      if (err) {
+        console.error('File does not exist:', err);
+        return res.status(404).json({ error: 'File not found' });
+      }
+
+      // Send the file as a response
+      res.download(filePath, file.filename, (err) => {
+        if (err) {
+          console.error('Error sending file:', err);
+          res.status(500).json({ error: 'An error occurred while sending the file' });
+        }
+      });
+    });
+  } catch (error) {
+    console.error('Error retrieving file:', error);
+    res.status(500).json({ error: 'An error occurred while retrieving the file' });
   }
 };
