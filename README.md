@@ -36,15 +36,36 @@ Examples and instructions on how to use your project.
 ROUTES
 
 
-POST /api/auth/logout
-POST /api/auth/login
+POST /api/auth/logout LOGOUT TOKEN AND BLACKLIST
+POST /api/auth/login LOGIN WITH TOKEN
 POST /api/auth/register
-GET /api/users
-GET /api/users/id
-POST /api/users
-PUT /api/users/id
-DELETE /api/users/id
-POST /api/uploads/rename/:id { newFilename: "test.csv"}
+
+GET /api/users GET ALL USERS
+GET /api/users/id VIEW A USER
+POST /api/users CREATE A USER
+PUT /api/users/id EDIT A USER
+DELETE /api/users/id DELETE A USER
+
+GET /api/uploads/download/:id'    downloadFile
+GET /api/uploads/documents  getAllDocuments
+GET /api/uploads/documents/:id      getDocumentsById
+POST /api/uploads/upload-single   uploadSingleFile
+POST /api/uploads/upload-multiple  uploadMultipleFiles
+DELETE /api/uploads/delete/:id      deleteFile
+PUT /api/uploads/rename/:id { newFilename: "test.csv"} RENAME UPLOADED FILE
+
+GET api/messages GET ALL MESSAGES 
+GET api/messages/:id GET MESSAGE
+POST api/messages CREATE MESSAGE & CONVERSATION IF NECESSARY
+DELETE api/messages/:id DELETE MESSAGE
+PUT api/messages/:id UPDATE MESSAGE
+
+GET api/conversations GET ALL CONVERSATIONS
+GET api/conversationsuser/:id GET CONVERSATIONS FOR USER ID WITH MESSAGES
+GET api/conversations/:id GET CONVERSATION
+POST api/conversations CREATE CONVERSATION
+DELETE api/conversations/:id DELETE CONVERSATION
+PUT api/conversations/:id   UPDATE CONVERSATION
 
 
 
