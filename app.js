@@ -11,6 +11,8 @@ const authRoutes = require('./db/routes/authRoutes');
 const uploadRoutes = require('./db/routes/uploadRoutes');
 const conversationsRoutes = require('./db/routes/conversationsRoutes');
 const messagesRoutes = require('./db/routes/messagesRoutes');
+const paymentRoutes = require('./db/routes/paymentRoutes')
+const postRoutes = require('./db/routes/postRoutes')
 const auth = require('./utilities/auth');
 
 
@@ -61,6 +63,8 @@ app.use('/api', conversationsRoutes);
 app.use('/api', messagesRoutes);
 app.use('/api/auth', authRoutes); 
 app.use('/api/uploads', uploadRoutes); 
+app.use('/api/payments', paymentRoutes);
+app.use('/api', postRoutes);
 
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

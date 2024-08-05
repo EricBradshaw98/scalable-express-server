@@ -79,22 +79,6 @@ exports.deleteUser = async (req, res) => {
 };
 
 
-// Register a new user
-exports.registerUser = async (req, res) => {
-  const { name, email, password, address, phoneNumber, role } = req.body;
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await pool.query(
-      'INSERT INTO users (name, email, password, address, phone_number, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [name, email, hashedPassword, address, phoneNumber, role]
-    );
-    const camelCasedResult = camelCaseKeys(result.rows[0]);
-    const token = generateToken(camelCasedResult);
-    res.status(201).json({ data: camelCasedResult, token });
-  } catch (error) {
-    res.status(500).json({ error: 'An error occurred while registering the user' });
-  }
-};
 
 // Login a user
 exports.loginUser = async (req, res) => {

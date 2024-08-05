@@ -2,8 +2,12 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users(
   id SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
+   email VARCHAR(255) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
+  confirmation_token VARCHAR(64),
+  confirmed BOOLEAN DEFAULT false,
+  reset_token VARCHAR(64),
+  reset_token_expires BIGINT,
   address VARCHAR(255),
   phone_number VARCHAR(50),
   role VARCHAR(50) NOT NULL,
